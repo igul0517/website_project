@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strata Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Strata Management System</div>
+        <div class="nav-links">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#meetings">Meetings</a>
+            <a href="#maintenance">Maintenance</a>
+            <a href="#finances">Finances</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="dashboard" class="section active">
+            <h1>Building Dashboard</h1>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button onclick="showModal('maintenance')">Report Issue</button>
+                    <button onclick="showModal('meeting')">Schedule Meeting</button>
+                </div>
+                <div class="card">
+                    <h3>Upcoming Meetings</h3>
+                    <ul id="meetings-list">
+                        <li>Annual General Meeting - April 15, 2025</li>
+                        <li>Committee Meeting - April 8, 2025</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Financial Summary</h3>
+                    <div class="finance-summary">
+                        <p>Administration Fund: $50,000</p>
+                        <p>Capital Works Fund: $100,000</p>
+                        <p>Outstanding Levies: $5,000</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Recent Maintenance</h3>
+                    <ul id="maintenance-list">
+                        <li>Elevator Inspection - March 30, 2025</li>
+                        <li>Garden Maintenance - March 25, 2025</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
