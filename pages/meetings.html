@@ -110,6 +110,7 @@
         </div>
     </div>
 
+    <script src="../script.js"></script>
     <script>
         // Sample meetings data
         let meetings = [
@@ -193,11 +194,43 @@
 
         function renderMeetingsList(filteredMeetings = null) {
             const meetingsList = document.getElementById('meetingsList');
-            const meetingsToShow = filteredMeetings || meetings;
-            
-            if (meetingsToShow.length === 0) {
-                meetingsList.innerHTML = '<div class="no-meetings">No meetings scheduled</div>';
-                return;
+            const loadingHtml = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading meetings...</div>';
+            meetingsList.innerHTML = loadingHtml;
+
+            try {
+                const meetingsToShow = filteredMeetings || meetings;
+                
+                if (meetingsToShow.length === 0) {
+                    meetingsList.innerHTML = '<div class="no-meetings"><i class="fas fa-calendar-xmark"></i> No meetings scheduled</div>';
+                    return;
+                }
+
+                const sortedMeetings = meetingsToShow.sort((a, b) => new Date(a.date) - new Date(b.date));
+                let html = '';
+                
+                sortedMeetings.forEach(meeting => {
+                    const meetingDate = new Date(`${meeting.date} ${meeting.time}`);
+                    const isPast = meetingDate < new Date();
+                    
+                    html += `
+                        <div class="meeting-card ${isPast ? 'past' : ''}">
+                            <div class="meeting-header">
+                                <h3>${meeting.title}</h3>
+                                <span class="meeting-type">${meeting.type}</span>
+                            </div>
+                            <div class="meeting-details">
+                                <p><i class="fas fa-clock"></i> ${meeting.date} at ${meeting.time}</p>
+                                <p><i class="fas fa-location-dot"></i> ${meeting.location}</p>
+                                ${meeting.agenda ? `<p><i class="fas fa-list"></i> ${meeting.agenda}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                meetingsList.innerHTML = html;
+            } catch (error) {
+                meetingsList.innerHTML = '<div class="error"><i class="fas fa-exclamation-circle"></i> Error loading meetings</div>';
+                console.error('Error rendering meetings:', error);
             }
 
             const sortedMeetings = meetingsToShow.sort((a, b) => new Date(a.date) - new Date(b.date));

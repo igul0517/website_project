@@ -1,3 +1,33 @@
+// Mobile navigation toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+            const isExpanded = navLinks.classList.contains('show');
+            navToggle.setAttribute('aria-expanded', isExpanded);
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navToggle.contains(e.target) && !navLinks.contains(e.target)) {
+                navLinks.classList.remove('show');
+                navToggle.setAttribute('aria-expanded', false);
+            }
+        });
+
+        // Close mobile menu when window is resized above mobile breakpoint
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('show');
+                navToggle.setAttribute('aria-expanded', false);
+            }
+        });
+    }
+});
+
 // Modal functionality
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modal-body');

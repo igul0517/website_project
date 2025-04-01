@@ -184,18 +184,33 @@
         </div>
     </main>
 
+    <script src="../script.js"></script>
     <script>
         // Toggle lookup form visibility
         function toggleLookupForm() {
             const form = document.getElementById('lookupForm');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            const isHidden = form.style.display === 'none';
+            form.style.display = isHidden ? 'block' : 'none';
+            
+            // Reset form and results when closing
+            if (!isHidden) {
+                document.getElementById('unitLookupForm').reset();
+                document.getElementById('lookupResult').style.display = 'none';
+            }
         }
 
         // Handle unit lookup (GET request example)
         async function lookupUnitContact(e) {
             e.preventDefault();
-            const unit = document.getElementById('lookupUnit').value;
+            const unit = document.getElementById('lookupUnit').value.trim();
             const resultDiv = document.getElementById('lookupResult');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            if (!unit) {
+                showNotification('Please enter a unit number', 'error');
+                return;
+            }
             
             try {
                 // Show loading state
@@ -231,14 +246,55 @@
             }
         }
 
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
         // Handle contact form submission (POST request example)
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
             const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            // Validate form
+            const email = form.email.value.trim();
+            const message = form.message.value.trim();
+            const subject = form.subject.value.trim();
+
+            if (!isValidEmail(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                form.email.focus();
+                return;
+            }
+
+            if (message.length < 10) {
+                showNotification('Message must be at least 10 characters long', 'error');
+                form.message.focus();
+                return;
+            }
+
+            if (!subject) {
+                showNotification('Please enter a subject', 'error');
+                form.subject.focus();
+                return;
+            }
             
             try {
-                // Disable submit button and show loading state
+                // Show loading state
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 

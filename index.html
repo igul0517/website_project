@@ -29,11 +29,50 @@
         <div class="hero-content">
             <h1>Welcome to Your Strata Community</h1>
             <p>Efficiently manage your strata property with our comprehensive management system</p>
+            <div class="hero-actions">
+                <button class="btn primary" onclick="showModal('maintenance')">
+                    <i class="fas fa-exclamation-circle"></i> Report an Issue
+                </button>
+                <button class="btn secondary" onclick="window.location.href='pages/documents.html'">
+                    <i class="fas fa-file-alt"></i> View Documents
+                </button>
+            </div>
         </div>
     </header>
 
     <main class="container">
         <section id="dashboard" class="section active">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+                <div class="dashboard-date">
+                    <i class="fas fa-clock"></i> Last updated: <span id="lastUpdated">Loading...</span>
+                </div>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="stat-content">
+                        <h4>Active Issues</h4>
+                        <p class="stat-value" id="activeIssues">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-content">
+                        <h4>Upcoming Meetings</h4>
+                        <p class="stat-value" id="upcomingMeetings">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-content">
+                        <h4>Recent Documents</h4>
+                        <p class="stat-value" id="recentDocuments">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="dashboard-grid">
                 <div class="card quick-actions">
                     <div class="card-header">
@@ -41,9 +80,22 @@
                         <h3>Quick Actions</h3>
                     </div>
                     <div class="card-content">
-                        <button class="btn primary" onclick="showModal('maintenance')"><i class="fas fa-exclamation-circle"></i> Report Issue</button>
-                        <button class="btn secondary" onclick="showModal('meeting')"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
-                        <button class="btn tertiary" onclick="showModal('levy')"><i class="fas fa-calculator"></i> Calculate Levy</button>
+                        <button class="btn primary" onclick="showModal('maintenance')">
+                            <i class="fas fa-exclamation-circle"></i> Report Issue
+                            <span class="btn-description">Submit a new maintenance request</span>
+                        </button>
+                        <button class="btn secondary" onclick="showModal('meeting')">
+                            <i class="fas fa-calendar-plus"></i> Schedule Meeting
+                            <span class="btn-description">Book a new meeting or event</span>
+                        </button>
+                        <button class="btn tertiary" onclick="showModal('levy')">
+                            <i class="fas fa-calculator"></i> Calculate Levy
+                            <span class="btn-description">Estimate your quarterly levy</span>
+                        </button>
+                        <button class="btn info" onclick="window.location.href='pages/documents.html'">
+                            <i class="fas fa-upload"></i> Upload Document
+                            <span class="btn-description">Share important files</span>
+                        </button>
                     </div>
                 </div>
 
@@ -51,29 +103,13 @@
                     <div class="card-header">
                         <i class="fas fa-calendar"></i>
                         <h3>Upcoming Meetings</h3>
+                        <button class="btn-icon" onclick="window.location.href='pages/meetings.html'">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
                     </div>
-                    <div class="card-content">
-                        <div class="meeting-item">
-                            <div class="meeting-date">
-                                <span class="day">15</span>
-                                <span class="month">APR</span>
-                            </div>
-                            <div class="meeting-details">
-                                <h4>Annual General Meeting</h4>
-                                <p><i class="fas fa-clock"></i> 6:00 PM</p>
-                                <p><i class="fas fa-location-dot"></i> Common Room</p>
-                            </div>
-                        </div>
-                        <div class="meeting-item">
-                            <div class="meeting-date">
-                                <span class="day">08</span>
-                                <span class="month">APR</span>
-                            </div>
-                            <div class="meeting-details">
-                                <h4>Committee Meeting</h4>
-                                <p><i class="fas fa-clock"></i> 7:00 PM</p>
-                                <p><i class="fas fa-location-dot"></i> Meeting Room</p>
-                            </div>
+                    <div class="card-content" id="upcomingMeetingsList">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading meetings...
                         </div>
                     </div>
                 </div>
@@ -82,34 +118,18 @@
                     <div class="card-header">
                         <i class="fas fa-chart-pie"></i>
                         <h3>Financial Summary</h3>
+                        <div class="card-actions">
+                            <button class="btn-icon" onclick="refreshFinancials()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="btn-icon" onclick="showModal('financials')">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-content">
-                        <div class="finance-item">
-                            <div class="finance-icon admin-fund">
-                                <i class="fas fa-landmark"></i>
-                            </div>
-                            <div class="finance-details">
-                                <h4>Administration Fund</h4>
-                                <p class="amount">$50,000</p>
-                            </div>
-                        </div>
-                        <div class="finance-item">
-                            <div class="finance-icon capital-fund">
-                                <i class="fas fa-building-columns"></i>
-                            </div>
-                            <div class="finance-details">
-                                <h4>Capital Works Fund</h4>
-                                <p class="amount">$100,000</p>
-                            </div>
-                        </div>
-                        <div class="finance-item">
-                            <div class="finance-icon outstanding">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="finance-details">
-                                <h4>Outstanding Levies</h4>
-                                <p class="amount warning">$5,000</p>
-                            </div>
+                    <div class="card-content" id="financialSummary">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading financial data...
                         </div>
                     </div>
                 </div>
@@ -118,27 +138,13 @@
                     <div class="card-header">
                         <i class="fas fa-wrench"></i>
                         <h3>Recent Maintenance</h3>
+                        <button class="btn-icon" onclick="window.location.href='pages/maintenance.html'">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
                     </div>
-                    <div class="card-content">
-                        <div class="maintenance-item completed">
-                            <div class="maintenance-icon">
-                                <i class="fas fa-elevator"></i>
-                            </div>
-                            <div class="maintenance-details">
-                                <h4>Elevator Inspection</h4>
-                                <p><i class="fas fa-calendar-check"></i> March 30, 2025</p>
-                                <span class="status">Completed</span>
-                            </div>
-                        </div>
-                        <div class="maintenance-item completed">
-                            <div class="maintenance-icon">
-                                <i class="fas fa-tree"></i>
-                            </div>
-                            <div class="maintenance-details">
-                                <h4>Garden Maintenance</h4>
-                                <p><i class="fas fa-calendar-check"></i> March 25, 2025</p>
-                                <span class="status">Completed</span>
-                            </div>
+                    <div class="card-content" id="recentMaintenanceList">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading maintenance records...
                         </div>
                     </div>
                 </div>
@@ -148,10 +154,18 @@
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close"><i class="fas fa-times"></i></span>
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <div id="modal-body"></div>
+            <div class="modal-footer" id="modal-footer"></div>
         </div>
     </div>
+
+    <div class="notification-container" id="notificationContainer"></div>
 
     <footer class="footer">
         <div class="footer-content">

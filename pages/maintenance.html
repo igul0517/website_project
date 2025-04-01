@@ -6,21 +6,38 @@
     <title>Maintenance - Strata Management</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Strata Management</div>
+        <div class="nav-brand">
+            <i class="fas fa-building"></i>
+            Strata Management
+        </div>
         <div class="nav-links">
-            <a href="../index.html">Dashboard</a>
-            <a href="meetings.html">Meetings</a>
-            <a href="maintenance.html">Maintenance</a>
-            <a href="documents.html">Documents</a>
-            <a href="contact.html">Contact</a>
+            <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="meetings.html"><i class="fas fa-calendar"></i> Meetings</a>
+            <a href="maintenance.html" class="active"><i class="fas fa-tools"></i> Maintenance</a>
+            <a href="documents.html"><i class="fas fa-file-alt"></i> Documents</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <div class="nav-toggle">
+            <i class="fas fa-bars"></i>
         </div>
     </nav>
 
     <main class="container">
-        <h1>Maintenance Portal</h1>
+        <header class="page-header">
+            <h1><i class="fas fa-tools"></i> Maintenance Portal</h1>
+            <div class="header-actions">
+                <button class="btn primary" onclick="filterIssues('all')">
+                    <i class="fas fa-list"></i> All Issues
+                </button>
+                <button class="btn secondary" onclick="filterIssues('my')">
+                    <i class="fas fa-user"></i> My Issues
+                </button>
+            </div>
+        </header>
 
         <div class="maintenance-grid">
             <div class="maintenance-form">
@@ -72,40 +89,192 @@
         </div>
     </main>
 
+    <script src="../script.js"></script>
     <script>
         // Mock data for active issues
         const activeIssues = [
-            { id: 1, category: 'plumbing', description: 'Leaking tap in common bathroom', status: 'in-progress', created: '2025-03-30' },
-            { id: 2, category: 'electrical', description: 'Flickering lights in corridor', status: 'pending', created: '2025-03-29' }
+            { 
+                id: 1, 
+                category: 'plumbing', 
+                description: 'Leaking tap in common bathroom', 
+                status: 'in-progress', 
+                created: '2025-03-30',
+                unit: '101',
+                priority: 'high',
+                updates: [
+                    { date: '2025-03-30', status: 'reported', note: 'Issue reported' },
+                    { date: '2025-03-31', status: 'in-progress', note: 'Plumber assigned' }
+                ]
+            },
+            { 
+                id: 2, 
+                category: 'electrical', 
+                description: 'Flickering lights in corridor', 
+                status: 'pending', 
+                created: '2025-03-29',
+                unit: '203',
+                priority: 'medium',
+                updates: [
+                    { date: '2025-03-29', status: 'reported', note: 'Issue reported' }
+                ]
+            }
         ];
 
         // Render active issues
-        function renderActiveIssues() {
+        function renderActiveIssues(filter = 'all') {
             const container = document.getElementById('activeIssues');
-            container.innerHTML = activeIssues.map(issue => `
-                <div class="issue-card ${issue.status}">
-                    <div class="issue-header">
-                        <span class="category">${issue.category}</span>
-                        <span class="status">${issue.status}</span>
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading issues...</div>';
+
+            setTimeout(() => {
+                const filteredIssues = filter === 'my' ? activeIssues.filter(issue => issue.unit === '101') : activeIssues;
+                
+                if (filteredIssues.length === 0) {
+                    container.innerHTML = '<div class="no-issues"><i class="fas fa-check-circle"></i> No maintenance issues found</div>';
+                    return;
+                }
+
+                container.innerHTML = filteredIssues.map(issue => `
+                    <div class="issue-card ${issue.status}">
+                        <div class="issue-header">
+                            <div class="issue-meta">
+                                <span class="category"><i class="fas fa-${getCategoryIcon(issue.category)}"></i> ${capitalize(issue.category)}</span>
+                                <span class="priority ${issue.priority}"><i class="fas fa-exclamation-circle"></i> ${capitalize(issue.priority)}</span>
+                            </div>
+                            <span class="status ${issue.status}">${getStatusLabel(issue.status)}</span>
+                        </div>
+                        <div class="issue-content">
+                            <p class="description">${issue.description}</p>
+                            <p class="unit"><i class="fas fa-home"></i> Unit ${issue.unit}</p>
+                        </div>
+                        <div class="issue-timeline">
+                            ${issue.updates.map(update => `
+                                <div class="timeline-item">
+                                    <span class="date">${formatDate(update.date)}</span>
+                                    <span class="status">${update.note}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="issue-footer">
+                            <span class="date"><i class="fas fa-calendar"></i> Reported: ${formatDate(issue.created)}</span>
+                            <button class="btn secondary btn-sm" onclick="showIssueDetails(${issue.id})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
                     </div>
-                    <p>${issue.description}</p>
-                    <div class="issue-footer">
-                        <span class="date">Reported: ${issue.created}</span>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }, 500);
         }
 
-        // Initialize
-        renderActiveIssues();
+        // Helper functions
+        function getCategoryIcon(category) {
+            const icons = {
+                plumbing: 'faucet',
+                electrical: 'bolt',
+                structural: 'building',
+                common: 'users'
+            };
+            return icons[category] || 'wrench';
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': '<i class="fas fa-clock"></i> Pending',
+                'in-progress': '<i class="fas fa-cog fa-spin"></i> In Progress',
+                'completed': '<i class="fas fa-check-circle"></i> Completed'
+            };
+            return labels[status] || status;
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-AU', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Filter issues
+        function filterIssues(filter) {
+            const buttons = document.querySelectorAll('.header-actions button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderActiveIssues(filter);
+        }
 
         // Form submission
         document.getElementById('maintenanceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // In a real app, this would send data to the server
-            alert('Maintenance issue reported successfully!');
-            e.target.reset();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+
+            try {
+                // Validate form
+                const category = form.category.value;
+                const description = form.description.value.trim();
+                const urgency = form.querySelector('input[name="urgency"]:checked')?.value;
+
+                if (!category || !description || !urgency) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                if (description.length < 10) {
+                    throw new Error('Description must be at least 10 characters long');
+                }
+
+                // Show loading state
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Add new issue
+                const newIssue = {
+                    id: activeIssues.length + 1,
+                    category,
+                    description,
+                    priority: urgency,
+                    status: 'pending',
+                    created: new Date().toISOString().split('T')[0],
+                    unit: '101',
+                    updates: [{
+                        date: new Date().toISOString().split('T')[0],
+                        status: 'reported',
+                        note: 'Issue reported'
+                    }]
+                };
+
+                activeIssues.unshift(newIssue);
+                renderActiveIssues();
+                form.reset();
+                showNotification('Maintenance issue reported successfully!', 'success');
+            } catch (error) {
+                showNotification(error.message, 'error');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
         });
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Initialize
+        renderActiveIssues();
     </script>
 </body>
 </html>

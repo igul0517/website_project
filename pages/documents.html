@@ -6,31 +6,56 @@
     <title>Documents - Strata Management</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Strata Management</div>
+        <div class="nav-brand">
+            <i class="fas fa-building"></i>
+            Strata Management
+        </div>
         <div class="nav-links">
-            <a href="../index.html">Dashboard</a>
-            <a href="meetings.html">Meetings</a>
-            <a href="maintenance.html">Maintenance</a>
-            <a href="documents.html">Documents</a>
-            <a href="contact.html">Contact</a>
+            <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="meetings.html"><i class="fas fa-calendar"></i> Meetings</a>
+            <a href="maintenance.html"><i class="fas fa-tools"></i> Maintenance</a>
+            <a href="documents.html" class="active"><i class="fas fa-file-alt"></i> Documents</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <div class="nav-toggle">
+            <i class="fas fa-bars"></i>
         </div>
     </nav>
 
     <main class="container">
-        <h1>Document Repository</h1>
+        <header class="page-header">
+            <h1><i class="fas fa-file-alt"></i> Document Repository</h1>
+            <div class="header-actions">
+                <button class="btn primary" onclick="uploadDocument()">
+                    <i class="fas fa-upload"></i> Upload Document
+                </button>
+            </div>
+        </header>
 
         <div class="document-search">
-            <input type="text" id="searchInput" placeholder="Search documents...">
-            <select id="categoryFilter">
-                <option value="">All Categories</option>
-                <option value="minutes">Meeting Minutes</option>
-                <option value="financial">Financial Reports</option>
-                <option value="bylaws">By-laws</option>
-                <option value="maintenance">Maintenance Records</option>
-            </select>
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search documents...">
+            </div>
+            <div class="filter-group">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="minutes">Meeting Minutes</option>
+                    <option value="financial">Financial Reports</option>
+                    <option value="bylaws">By-laws</option>
+                    <option value="maintenance">Maintenance Records</option>
+                </select>
+                <select id="yearFilter">
+                    <option value="">All Years</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
         </div>
 
         <div class="documents-grid" id="documentsGrid">
@@ -38,62 +63,182 @@
         </div>
     </main>
 
+    <script src="../script.js"></script>
     <script>
         // Mock documents data
         const documents = [
-            { id: 1, name: 'AGM Minutes 2025', category: 'minutes', date: '2025-03-15', type: 'pdf' },
-            { id: 2, name: 'Q1 Financial Report', category: 'financial', date: '2025-03-31', type: 'pdf' },
-            { id: 3, name: 'Building By-laws', category: 'bylaws', date: '2025-01-01', type: 'pdf' },
-            { id: 4, name: 'Maintenance Schedule 2025', category: 'maintenance', date: '2025-01-01', type: 'pdf' }
+            { 
+                id: 1, 
+                name: 'AGM Minutes 2025', 
+                category: 'minutes', 
+                date: '2025-03-15', 
+                type: 'pdf',
+                size: '2.5 MB',
+                author: 'John Smith',
+                restricted: false
+            },
+            { 
+                id: 2, 
+                name: 'Q1 Financial Report', 
+                category: 'financial', 
+                date: '2025-03-31', 
+                type: 'pdf',
+                size: '1.8 MB',
+                author: 'Jane Doe',
+                restricted: true
+            },
+            { 
+                id: 3, 
+                name: 'Building By-laws', 
+                category: 'bylaws', 
+                date: '2025-01-01', 
+                type: 'pdf',
+                size: '3.2 MB',
+                author: 'Legal Team',
+                restricted: false
+            },
+            { 
+                id: 4, 
+                name: 'Maintenance Schedule 2025', 
+                category: 'maintenance', 
+                date: '2025-01-01', 
+                type: 'pdf',
+                size: '1.1 MB',
+                author: 'Building Manager',
+                restricted: false
+            }
         ];
 
         function renderDocuments(docs) {
             const grid = document.getElementById('documentsGrid');
-            grid.innerHTML = docs.map(doc => `
-                <div class="document-card">
-                    <div class="document-icon ${doc.type}"></div>
-                    <div class="document-info">
-                        <h3>${doc.name}</h3>
-                        <p>Category: ${doc.category}</p>
-                        <p>Last Updated: ${doc.date}</p>
+            grid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading documents...</div>';
+
+            setTimeout(() => {
+                if (docs.length === 0) {
+                    grid.innerHTML = '<div class="no-documents"><i class="fas fa-folder-open"></i> No documents found</div>';
+                    return;
+                }
+
+                grid.innerHTML = docs.map(doc => `
+                    <div class="document-card ${doc.restricted ? 'restricted' : ''}">
+                        <div class="document-icon">
+                            <i class="fas fa-${getDocumentIcon(doc.type)}"></i>
+                            ${doc.restricted ? '<i class="fas fa-lock restricted-icon"></i>' : ''}
+                        </div>
+                        <div class="document-info">
+                            <h3>${doc.name}</h3>
+                            <div class="document-meta">
+                                <span class="category"><i class="fas fa-folder"></i> ${capitalize(doc.category)}</span>
+                                <span class="date"><i class="fas fa-calendar"></i> ${formatDate(doc.date)}</span>
+                                <span class="size"><i class="fas fa-file-archive"></i> ${doc.size}</span>
+                                <span class="author"><i class="fas fa-user"></i> ${doc.author}</span>
+                            </div>
+                        </div>
+                        <div class="document-actions">
+                            <button class="btn primary btn-sm" onclick="viewDocument(${doc.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn secondary btn-sm" onclick="downloadDocument(${doc.id})">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            ${doc.restricted ? `
+                                <button class="btn warning btn-sm" onclick="requestAccess(${doc.id})">
+                                    <i class="fas fa-key"></i> Request Access
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div class="document-actions">
-                        <button onclick="viewDocument(${doc.id})">View</button>
-                        <button onclick="downloadDocument(${doc.id})">Download</button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }, 500);
+        }
+
+        // Helper functions
+        function getDocumentIcon(type) {
+            const icons = {
+                pdf: 'file-pdf',
+                doc: 'file-word',
+                xls: 'file-excel',
+                jpg: 'file-image'
+            };
+            return icons[type] || 'file-alt';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-AU', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         }
 
         // Search and filter functionality
         function filterDocuments() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
+            const year = document.getElementById('yearFilter').value;
             
             const filtered = documents.filter(doc => {
                 const matchesSearch = doc.name.toLowerCase().includes(searchTerm);
                 const matchesCategory = !category || doc.category === category;
-                return matchesSearch && matchesCategory;
+                const matchesYear = !year || doc.date.includes(year);
+                return matchesSearch && matchesCategory && matchesYear;
             });
             
             renderDocuments(filtered);
         }
 
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', filterDocuments);
-        document.getElementById('categoryFilter').addEventListener('change', filterDocuments);
-
-        // Initialize
-        renderDocuments(documents);
-
-        // Mock document actions
+        // Document actions
         function viewDocument(id) {
-            alert(`Viewing document ${id}`);
+            const doc = documents.find(d => d.id === id);
+            if (doc.restricted) {
+                showNotification('This document requires special access. Please request access first.', 'error');
+                return;
+            }
+            showNotification('Opening document...', 'success');
         }
 
         function downloadDocument(id) {
-            alert(`Downloading document ${id}`);
+            const doc = documents.find(d => d.id === id);
+            if (doc.restricted) {
+                showNotification('This document requires special access. Please request access first.', 'error');
+                return;
+            }
+            showNotification(`Downloading ${doc.name}...`, 'success');
         }
+
+        function requestAccess(id) {
+            const doc = documents.find(d => d.id === id);
+            showNotification(`Access request for ${doc.name} has been submitted.`, 'info');
+        }
+
+        function uploadDocument() {
+            // In a real app, this would open a file upload modal
+            showNotification('Document upload feature coming soon!', 'info');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterDocuments);
+        document.getElementById('categoryFilter').addEventListener('change', filterDocuments);
+        document.getElementById('yearFilter').addEventListener('change', filterDocuments);
+
+        // Initialize
+        renderDocuments(documents);
     </script>
 </body>
 </html>
