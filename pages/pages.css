@@ -1,10 +1,10 @@
 /* Calendar styles */
 .calendar-container {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
+    background: var(--card-background);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-xl);
 }
 
 .calendar-header {
@@ -17,7 +17,8 @@
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
 }
 
 .day-header {
@@ -28,32 +29,38 @@
 
 .day {
     text-align: center;
-    padding: 1rem;
-    border: 1px solid #eee;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .day:hover {
-    background-color: #f5f5f5;
+    background-color: var(--background-color);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
+    z-index: 1;
 }
 
 .day.has-meeting {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: var(--info-color);
+    color: white;
+    font-weight: 500;
 }
 
 /* Maintenance styles */
 .maintenance-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
 }
 
 .maintenance-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--card-background);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .radio-group {
@@ -62,37 +69,57 @@
 }
 
 .issue-card {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    border-left: 4px solid #ccc;
+    background: var(--card-background);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.issue-card:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
 }
 
 .issue-card.pending {
-    border-left-color: #f39c12;
+    border-left-color: var(--warning-color);
 }
 
 .issue-card.in-progress {
-    border-left-color: #3498db;
+    border-left-color: var(--info-color);
 }
 
 .issue-card.completed {
-    border-left-color: #2ecc71;
+    border-left-color: var(--success-color);
 }
 
 /* Document styles */
 .document-search {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    background: var(--card-background);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .document-search input,
 .document-search select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.document-search input:focus,
+.document-search select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .documents-grid {
@@ -102,10 +129,19 @@
 }
 
 .document-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--card-background);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.document-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .document-icon {
@@ -122,30 +158,117 @@
 /* Contact styles */
 .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
 }
 
 .contact-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--card-background);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .committee-member {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--card-background);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.committee-member:hover {
+    transform: translateX(4px);
+}
+
+.committee-member-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.committee-member-info {
+    flex: 1;
+}
+
+.committee-member-info h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.committee-member-info p {
+    margin: var(--spacing-xs) 0 0;
+    color: var(--text-light);
 }
 
 .emergency-contacts {
-    background: #fff3e0;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-top: 2rem;
+    background: var(--warning-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    margin-top: var(--spacing-xl);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-contacts::before {
+    content: '⚠️';
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    font-size: 100px;
+    opacity: 0.1;
+    transform: rotate(15deg);
+}
+
+.emergency-contacts h2 {
+    color: #fff;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.emergency-contacts a {
+    color: #fff;
+    text-decoration: underline;
 }
 
 /* Responsive design */

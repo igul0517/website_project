@@ -6,48 +6,144 @@
     <title>Meetings - Strata Management</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Strata Management</div>
+        <div class="nav-brand">
+            <i class="fas fa-building"></i>
+            Strata Management
+        </div>
         <div class="nav-links">
-            <a href="../index.html">Dashboard</a>
-            <a href="meetings.html">Meetings</a>
-            <a href="maintenance.html">Maintenance</a>
-            <a href="documents.html">Documents</a>
-            <a href="contact.html">Contact</a>
+            <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="meetings.html" class="active"><i class="fas fa-calendar"></i> Meetings</a>
+            <a href="maintenance.html"><i class="fas fa-tools"></i> Maintenance</a>
+            <a href="documents.html"><i class="fas fa-file-alt"></i> Documents</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <div class="nav-toggle">
+            <i class="fas fa-bars"></i>
         </div>
     </nav>
 
     <main class="container">
-        <h1>Meetings Calendar</h1>
-        
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <button onclick="previousMonth()">&lt;</button>
-                <h2 id="currentMonth">April 2025</h2>
-                <button onclick="nextMonth()">&gt;</button>
+        <header class="page-header">
+            <h1><i class="fas fa-calendar-alt"></i> Meetings Calendar</h1>
+            <div class="header-actions">
+                <button class="btn primary" onclick="showNewMeetingModal()">
+                    <i class="fas fa-plus"></i> Schedule Meeting
+                </button>
             </div>
-            <div class="calendar" id="calendar"></div>
-        </div>
+        </header>
+        
+        <div class="content-grid">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button class="btn icon-btn" onclick="previousMonth()"><i class="fas fa-chevron-left"></i></button>
+                    <h2 id="currentMonth">April 2025</h2>
+                    <button class="btn icon-btn" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar" id="calendar"></div>
+            </div>
 
-        <div class="meetings-list">
-            <h2>Upcoming Meetings</h2>
-            <div id="meetingsList"></div>
+            <div class="meetings-list">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Upcoming Meetings</h2>
+                    <div class="filter-controls">
+                        <select id="meetingTypeFilter" onchange="filterMeetings()">
+                            <option value="all">All Types</option>
+                            <option value="AGM">AGM</option>
+                            <option value="Committee">Committee</option>
+                            <option value="Special">Special</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="meetingsList" class="meetings-grid"></div>
+            </div>
         </div>
     </main>
 
+    <div id="newMeetingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> Schedule New Meeting</h2>
+                <button class="close-btn" onclick="closeNewMeetingModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="newMeetingForm">
+                    <div class="form-group">
+                        <label for="meetingTitle">Title</label>
+                        <input type="text" id="meetingTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="meetingType">Type</label>
+                        <select id="meetingType" required>
+                            <option value="AGM">Annual General Meeting</option>
+                            <option value="Committee">Committee Meeting</option>
+                            <option value="Special">Special Meeting</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="meetingDate">Date</label>
+                            <input type="date" id="meetingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="meetingTime">Time</label>
+                            <input type="time" id="meetingTime" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="meetingLocation">Location</label>
+                        <input type="text" id="meetingLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="meetingAgenda">Agenda</label>
+                        <textarea id="meetingAgenda" rows="4"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary" onclick="closeNewMeetingModal()">Cancel</button>
+                        <button type="submit" class="btn primary">Schedule Meeting</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Calendar functionality
-        const meetings = [
-            { date: '2025-04-15', title: 'Annual General Meeting', type: 'AGM' },
-            { date: '2025-04-08', title: 'Committee Meeting', type: 'Committee' }
+        // Sample meetings data
+        let meetings = [
+            { 
+                id: 1,
+                date: '2025-04-15', 
+                time: '18:00',
+                title: 'Annual General Meeting', 
+                type: 'AGM',
+                location: 'Common Room',
+                agenda: 'Annual budget review, Committee election, Building maintenance plan'
+            },
+            { 
+                id: 2,
+                date: '2025-04-08', 
+                time: '19:00',
+                title: 'Committee Meeting', 
+                type: 'Committee',
+                location: 'Meeting Room',
+                agenda: 'Review maintenance requests, Financial updates'
+            }
         ];
 
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        // Calendar functionality
         function renderCalendar(year, month) {
             const calendar = document.getElementById('calendar');
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
+            
+            document.getElementById('currentMonth').textContent = 
+                firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
             
             let html = '<div class="calendar-days">';
             ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
@@ -60,17 +156,128 @@
             
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const hasMeeting = meetings.some(m => m.date === date);
-                html += `<div class="day ${hasMeeting ? 'has-meeting' : ''}">${day}</div>`;
+                const todayMeetings = meetings.filter(m => m.date === date);
+                const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+                
+                html += `<div class="day ${todayMeetings.length ? 'has-meeting' : ''} ${isToday ? 'today' : ''}" 
+                    onclick="showDayMeetings('${date}')">
+                    ${day}
+                    ${todayMeetings.length ? `<span class="meeting-count">${todayMeetings.length}</span>` : ''}
+                </div>`;
             }
             
             html += '</div>';
             calendar.innerHTML = html;
+            renderMeetingsList();
         }
 
-        // Initialize with current month
-        const now = new Date();
-        renderCalendar(now.getFullYear(), now.getMonth());
+        function previousMonth() {
+            if (currentMonth === 0) {
+                currentYear--;
+                currentMonth = 11;
+            } else {
+                currentMonth--;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function nextMonth() {
+            if (currentMonth === 11) {
+                currentYear++;
+                currentMonth = 0;
+            } else {
+                currentMonth++;
+            }
+            renderCalendar(currentYear, currentMonth);
+        }
+
+        function renderMeetingsList(filteredMeetings = null) {
+            const meetingsList = document.getElementById('meetingsList');
+            const meetingsToShow = filteredMeetings || meetings;
+            
+            if (meetingsToShow.length === 0) {
+                meetingsList.innerHTML = '<div class="no-meetings">No meetings scheduled</div>';
+                return;
+            }
+
+            const sortedMeetings = meetingsToShow.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            let html = '';
+            sortedMeetings.forEach(meeting => {
+                const meetingDate = new Date(meeting.date + 'T' + meeting.time);
+                html += `
+                    <div class="meeting-card ${meeting.type.toLowerCase()}">
+                        <div class="meeting-date">
+                            <span class="day">${meetingDate.getDate()}</span>
+                            <span class="month">${meetingDate.toLocaleString('default', { month: 'short' })}</span>
+                        </div>
+                        <div class="meeting-details">
+                            <h3>${meeting.title}</h3>
+                            <p><i class="fas fa-clock"></i> ${meeting.time}</p>
+                            <p><i class="fas fa-location-dot"></i> ${meeting.location}</p>
+                            <span class="meeting-type">${meeting.type}</span>
+                        </div>
+                        <div class="meeting-actions">
+                            <button class="btn icon-btn" onclick="showMeetingDetails(${meeting.id})">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            meetingsList.innerHTML = html;
+        }
+
+        function filterMeetings() {
+            const type = document.getElementById('meetingTypeFilter').value;
+            const filteredMeetings = type === 'all' ? 
+                meetings : 
+                meetings.filter(m => m.type === type);
+            renderMeetingsList(filteredMeetings);
+        }
+
+        function showDayMeetings(date) {
+            const dayMeetings = meetings.filter(m => m.date === date);
+            renderMeetingsList(dayMeetings);
+        }
+
+        function showNewMeetingModal() {
+            document.getElementById('newMeetingModal').style.display = 'block';
+        }
+
+        function closeNewMeetingModal() {
+            document.getElementById('newMeetingModal').style.display = 'none';
+        }
+
+        // Initialize calendar
+        renderCalendar(currentYear, currentMonth);
+
+        // Form submission
+        document.getElementById('newMeetingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newMeeting = {
+                id: meetings.length + 1,
+                title: document.getElementById('meetingTitle').value,
+                type: document.getElementById('meetingType').value,
+                date: document.getElementById('meetingDate').value,
+                time: document.getElementById('meetingTime').value,
+                location: document.getElementById('meetingLocation').value,
+                agenda: document.getElementById('meetingAgenda').value
+            };
+            
+            meetings.push(newMeeting);
+            renderCalendar(currentYear, currentMonth);
+            closeNewMeetingModal();
+            this.reset();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
