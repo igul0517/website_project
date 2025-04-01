@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents - Strata Management</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Strata Management</div>
+        <div class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="meetings.html">Meetings</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="documents.html">Documents</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1>Document Repository</h1>
+
+        <div class="document-search">
+            <input type="text" id="searchInput" placeholder="Search documents...">
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="minutes">Meeting Minutes</option>
+                <option value="financial">Financial Reports</option>
+                <option value="bylaws">By-laws</option>
+                <option value="maintenance">Maintenance Records</option>
+            </select>
+        </div>
+
+        <div class="documents-grid" id="documentsGrid">
+            <!-- Dynamically populated -->
+        </div>
+    </main>
+
+    <script>
+        // Mock documents data
+        const documents = [
+            { id: 1, name: 'AGM Minutes 2025', category: 'minutes', date: '2025-03-15', type: 'pdf' },
+            { id: 2, name: 'Q1 Financial Report', category: 'financial', date: '2025-03-31', type: 'pdf' },
+            { id: 3, name: 'Building By-laws', category: 'bylaws', date: '2025-01-01', type: 'pdf' },
+            { id: 4, name: 'Maintenance Schedule 2025', category: 'maintenance', date: '2025-01-01', type: 'pdf' }
+        ];
+
+        function renderDocuments(docs) {
+            const grid = document.getElementById('documentsGrid');
+            grid.innerHTML = docs.map(doc => `
+                <div class="document-card">
+                    <div class="document-icon ${doc.type}"></div>
+                    <div class="document-info">
+                        <h3>${doc.name}</h3>
+                        <p>Category: ${doc.category}</p>
+                        <p>Last Updated: ${doc.date}</p>
+                    </div>
+                    <div class="document-actions">
+                        <button onclick="viewDocument(${doc.id})">View</button>
+                        <button onclick="downloadDocument(${doc.id})">Download</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search and filter functionality
+        function filterDocuments() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            
+            const filtered = documents.filter(doc => {
+                const matchesSearch = doc.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || doc.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            
+            renderDocuments(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterDocuments);
+        document.getElementById('categoryFilter').addEventListener('change', filterDocuments);
+
+        // Initialize
+        renderDocuments(documents);
+
+        // Mock document actions
+        function viewDocument(id) {
+            alert(`Viewing document ${id}`);
+        }
+
+        function downloadDocument(id) {
+            alert(`Downloading document ${id}`);
+        }
+    </script>
+</body>
+</html>

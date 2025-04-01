@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "regions": ["syd1", "hkg1"],
+  "crons": [
+    {
+      "path": "/api/maintenance-reminder",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/levy-reminder",
+      "schedule": "0 0 1 * *"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "JWT_SECRET": "@jwt-secret",
+    "EMAIL_API_KEY": "@email-api-key"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+}

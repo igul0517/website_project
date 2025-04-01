@@ -1,0 +1,161 @@
+/* Calendar styles */
+.calendar-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 0.5rem;
+}
+
+.day {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+.day:hover {
+    background-color: #f5f5f5;
+}
+
+.day.has-meeting {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+/* Maintenance styles */
+.maintenance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.maintenance-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.issue-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #ccc;
+}
+
+.issue-card.pending {
+    border-left-color: #f39c12;
+}
+
+.issue-card.in-progress {
+    border-left-color: #3498db;
+}
+
+.issue-card.completed {
+    border-left-color: #2ecc71;
+}
+
+/* Document styles */
+.document-search {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.document-search input,
+.document-search select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.document-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.document-icon {
+    width: 48px;
+    height: 48px;
+    background-size: contain;
+    margin-bottom: 1rem;
+}
+
+.document-icon.pdf {
+    background-image: url('../assets/pdf-icon.png');
+}
+
+/* Contact styles */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.contact-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.committee-member {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.emergency-contacts {
+    background: #fff3e0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .maintenance-grid,
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .document-search {
+        flex-direction: column;
+    }
+}

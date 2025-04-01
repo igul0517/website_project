@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meetings - Strata Management</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Strata Management</div>
+        <div class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="meetings.html">Meetings</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="documents.html">Documents</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1>Meetings Calendar</h1>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button onclick="previousMonth()">&lt;</button>
+                <h2 id="currentMonth">April 2025</h2>
+                <button onclick="nextMonth()">&gt;</button>
+            </div>
+            <div class="calendar" id="calendar"></div>
+        </div>
+
+        <div class="meetings-list">
+            <h2>Upcoming Meetings</h2>
+            <div id="meetingsList"></div>
+        </div>
+    </main>
+
+    <script>
+        // Calendar functionality
+        const meetings = [
+            { date: '2025-04-15', title: 'Annual General Meeting', type: 'AGM' },
+            { date: '2025-04-08', title: 'Committee Meeting', type: 'Committee' }
+        ];
+
+        function renderCalendar(year, month) {
+            const calendar = document.getElementById('calendar');
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            let html = '<div class="calendar-days">';
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                html += `<div class="day-header">${day}</div>`;
+            });
+            
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                html += '<div class="day empty"></div>';
+            }
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasMeeting = meetings.some(m => m.date === date);
+                html += `<div class="day ${hasMeeting ? 'has-meeting' : ''}">${day}</div>`;
+            }
+            
+            html += '</div>';
+            calendar.innerHTML = html;
+        }
+
+        // Initialize with current month
+        const now = new Date();
+        renderCalendar(now.getFullYear(), now.getMonth());
+    </script>
+</body>
+</html>
