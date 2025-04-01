@@ -5,48 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strata Management System</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Strata Management Systems</div>
+        <div class="nav-brand">
+            <i class="fas fa-building"></i>
+            Strata Management Systems
+        </div>
         <div class="nav-links">
-            <a href="#dashboard">Dashboard</a>
-            <a href="#meetings">Meetings</a>
-            <a href="#maintenance">Maintenance</a>
-            <a href="#finances">Finances</a>
+            <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="pages/meetings.html"><i class="fas fa-calendar"></i> Meetings</a>
+            <a href="pages/maintenance.html"><i class="fas fa-tools"></i> Maintenance</a>
+            <a href="pages/documents.html"><i class="fas fa-file-alt"></i> Documents</a>
+            <a href="pages/contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+        <div class="nav-toggle">
+            <i class="fas fa-bars"></i>
         </div>
     </nav>
 
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Your Strata Community</h1>
+            <p>Efficiently manage your strata property with our comprehensive management system</p>
+        </div>
+    </header>
+
     <main class="container">
         <section id="dashboard" class="section active">
-            <h1>Building Dashboard</h1>
             <div class="dashboard-grid">
-                <div class="card">
-                    <h3>Quick Actions</h3>
-                    <button onclick="showModal('maintenance')">Report Issue</button>
-                    <button onclick="showModal('meeting')">Schedule Meeting</button>
-                </div>
-                <div class="card">
-                    <h3>Upcoming Meetings</h3>
-                    <ul id="meetings-list">
-                        <li>Annual General Meeting - April 15, 2025</li>
-                        <li>Committee Meeting - April 8, 2025</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Financial Summary</h3>
-                    <div class="finance-summary">
-                        <p>Administration Fund: $50,000</p>
-                        <p>Capital Works Fund: $100,000</p>
-                        <p>Outstanding Levies: $5,000</p>
+                <div class="card quick-actions">
+                    <div class="card-header">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-content">
+                        <button class="btn primary" onclick="showModal('maintenance')"><i class="fas fa-exclamation-circle"></i> Report Issue</button>
+                        <button class="btn secondary" onclick="showModal('meeting')"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
+                        <button class="btn tertiary" onclick="showModal('levy')"><i class="fas fa-calculator"></i> Calculate Levy</button>
                     </div>
                 </div>
-                <div class="card">
-                    <h3>Recent Maintenance</h3>
-                    <ul id="maintenance-list">
-                        <li>Elevator Inspection - March 30, 2025</li>
-                        <li>Garden Maintenance - March 25, 2025</li>
-                    </ul>
+
+                <div class="card meetings">
+                    <div class="card-header">
+                        <i class="fas fa-calendar"></i>
+                        <h3>Upcoming Meetings</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="meeting-item">
+                            <div class="meeting-date">
+                                <span class="day">15</span>
+                                <span class="month">APR</span>
+                            </div>
+                            <div class="meeting-details">
+                                <h4>Annual General Meeting</h4>
+                                <p><i class="fas fa-clock"></i> 6:00 PM</p>
+                                <p><i class="fas fa-location-dot"></i> Common Room</p>
+                            </div>
+                        </div>
+                        <div class="meeting-item">
+                            <div class="meeting-date">
+                                <span class="day">08</span>
+                                <span class="month">APR</span>
+                            </div>
+                            <div class="meeting-details">
+                                <h4>Committee Meeting</h4>
+                                <p><i class="fas fa-clock"></i> 7:00 PM</p>
+                                <p><i class="fas fa-location-dot"></i> Meeting Room</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card finances">
+                    <div class="card-header">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Financial Summary</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="finance-item">
+                            <div class="finance-icon admin-fund">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="finance-details">
+                                <h4>Administration Fund</h4>
+                                <p class="amount">$50,000</p>
+                            </div>
+                        </div>
+                        <div class="finance-item">
+                            <div class="finance-icon capital-fund">
+                                <i class="fas fa-building-columns"></i>
+                            </div>
+                            <div class="finance-details">
+                                <h4>Capital Works Fund</h4>
+                                <p class="amount">$100,000</p>
+                            </div>
+                        </div>
+                        <div class="finance-item">
+                            <div class="finance-icon outstanding">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="finance-details">
+                                <h4>Outstanding Levies</h4>
+                                <p class="amount warning">$5,000</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card maintenance">
+                    <div class="card-header">
+                        <i class="fas fa-wrench"></i>
+                        <h3>Recent Maintenance</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="maintenance-item completed">
+                            <div class="maintenance-icon">
+                                <i class="fas fa-elevator"></i>
+                            </div>
+                            <div class="maintenance-details">
+                                <h4>Elevator Inspection</h4>
+                                <p><i class="fas fa-calendar-check"></i> March 30, 2025</p>
+                                <span class="status">Completed</span>
+                            </div>
+                        </div>
+                        <div class="maintenance-item completed">
+                            <div class="maintenance-icon">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <div class="maintenance-details">
+                                <h4>Garden Maintenance</h4>
+                                <p><i class="fas fa-calendar-check"></i> March 25, 2025</p>
+                                <span class="status">Completed</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -54,10 +148,43 @@
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close"><i class="fas fa-times"></i></span>
             <div id="modal-body"></div>
         </div>
     </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="pages/documents.html">Important Documents</a></li>
+                    <li><a href="pages/maintenance.html">Maintenance Requests</a></li>
+                    <li><a href="pages/meetings.html">Meeting Schedule</a></li>
+                    <li><a href="pages/contact.html">Contact Management</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Emergency Contacts</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> Building Manager: (02) 9999-9999</li>
+                    <li><i class="fas fa-phone"></i> Security: (02) 8888-8888</li>
+                    <li><i class="fas fa-phone"></i> Emergency: 000</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Stay Connected</h4>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Strata Management System. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
